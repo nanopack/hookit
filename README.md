@@ -1,29 +1,3 @@
 # Hooky
 
-TODO: Write a gem description
-
-## Installation
-
-Add this line to your application's Gemfile:
-
-    gem 'hooky'
-
-And then execute:
-
-    $ bundle
-
-Or install it yourself as:
-
-    $ gem install hooky
-
-## Usage
-
-TODO: Write usage instructions here
-
-## Contributing
-
-1. Fork it ( https://github.com/[my-github-username]/hooky/fork )
-2. Create your feature branch (`git checkout -b my-new-feature`)
-3. Commit your changes (`git commit -am 'Add some feature'`)
-4. Push to the branch (`git push origin my-new-feature`)
-5. Create a new Pull Request
+Hooky is the framework to provide hooky scripts with re-usable components and resources via an elegant dsl
