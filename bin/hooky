@@ -1,27 +1,15 @@
 #!/usr/bin/env ruby
 
-HOOKS_DIR = "#{Dir.pwd}/tmp"
+HOOKS_DIR = "/opt/local/hooky"
 
-hook   = ARGV.shift
-mod    = nil
-script = nil
+hook = ARGV.shift
 
 if not hook
   $stderr.puts "hook is required"
   exit 1
 end
 
-hook.match '(.+)\[(.+)\]' do |m|
-  mod    = m[1]
-  script = m[2]
-end
-
-if not (mod and script)
-  $stderr.puts "invalid hook format, expecting: php[default-configure]"
-  exit 1
-end
-
-if not File.exists? "#{HOOKS_DIR}/#{mod}/hooks/#{script}"
+if not File.exists? "#{HOOKS_DIR}/hooks/#{script}"
   $stderr.puts "hook: #{hook} does not exist"
 end
 
@@ -34,11 +22,11 @@ require 'hooky'
 include Hooky::Hook   # payload helpers
 include Hooky::DSL    # awesome resource library
 
-set :hook_root, "#{HOOKS_DIR}/#{mod}"
+set :hook_root, HOOKS_DIR
 
 # require hook libs
-Dir.glob("#{HOOKS_DIR}/#{mod}/lib/*.rb").sort.each do |file|
+Dir.glob("#{HOOKS_DIR}/lib/*.rb").each do |file|
   require file
 end
 
-load "#{HOOKS_DIR}/#{mod}/hooks/#{script}"
+load "#{HOOKS_DIR}/hooks/#{script}"
