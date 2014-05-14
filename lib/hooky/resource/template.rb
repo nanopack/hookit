@@ -75,11 +75,11 @@ module Hooky
       end
 
       def template_dir
-        "#{hook_root}/templates"
+        "#{module_root}/templates"
       end
 
-      def hook_root
-        dict[:hook_root]
+      def module_root
+        dict[:module_root]
       end
 
     end

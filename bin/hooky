@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-HOOKS_DIR = "/opt/local/hooky"
+MODULE_DIR = "/opt/local/hooky/mod"
 
 hook = ARGV.shift
 
@@ -9,7 +9,7 @@ if not hook
   exit 1
 end
 
-if not File.exists? "#{HOOKS_DIR}/hooks/#{hook}"
+if not File.exists? "#{MODULE_DIR}/hooks/#{hook}"
   $stderr.puts "hook: #{hook} does not exist"
 end
 
@@ -22,11 +22,11 @@ require 'hooky'
 include Hooky::Hook   # payload helpers
 include Hooky::DSL    # awesome resource library
 
-set :hook_root, HOOKS_DIR
+set :module_root, MODULE_DIR
 
 # require hook libs
-Dir.glob("#{HOOKS_DIR}/lib/*.rb").each do |file|
+Dir.glob("#{MODULE_DIR}/lib/*.rb").each do |file|
   require file
 end
 
-load "#{HOOKS_DIR}/hooks/#{hook}"
+load "#{MODULE_DIR}/hooks/#{hook}"
