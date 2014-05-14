@@ -9,13 +9,9 @@ if not hook
   exit 1
 end
 
-if not File.exists? "#{MODULE_DIR}/hooks/#{hook}"
-  $stderr.puts "hook: #{hook} does not exist"
-end
-
-# TODO: find a way to conditionally trigger this if dev only
-lib = File.expand_path('../../lib', __FILE__)
-$LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
+# uncomment if dev only
+# lib = File.expand_path('../../lib', __FILE__)
+# $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 
 require 'hooky'
 
@@ -29,4 +25,8 @@ Dir.glob("#{MODULE_DIR}/lib/*.rb").each do |file|
   require file
 end
 
-load "#{MODULE_DIR}/hooks/#{hook}"
+begin 
+  load "#{MODULE_DIR}/hooks/#{hook}"
+rescue LoadError
+  $stderr.puts "hook: #{hook} does not exist"
+end
