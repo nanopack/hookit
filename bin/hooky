@@ -26,7 +26,7 @@ Dir.glob("#{MODULE_DIR}/lib/*.rb").each do |file|
 end
 
 begin 
-  load "#{MODULE_DIR}/hooks/#{hook}"
+  load "#{MODULE_DIR}/hooks/#{hook}.rb"
 rescue LoadError
   $stderr.puts "hook: #{hook} does not exist"
 end
