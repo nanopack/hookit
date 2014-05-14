@@ -68,11 +68,11 @@ module Hooky
       end
 
       def file_dir
-        "#{hook_root}/files"
+        "#{module_root}/files"
       end
 
-      def hook_root
-        dict[:hook_root]
+      def module_root
+        dict[:module_root]
       end
 
     end
