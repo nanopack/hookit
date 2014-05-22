@@ -32,11 +32,11 @@ module Hooky
       protected
 
       def enable!
-        run_command! "svcadm enable #{"-r" if recursive} #{service_name}"
+        run_command! "svcadm enable -s #{"-r" if recursive} #{service_name}"
       end
 
       def disable!
-        run_command! "svcadm disable #{service_name}"
+        run_command! "svcadm disable -s #{service_name}"
       end
 
       def restart!
