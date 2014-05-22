@@ -8,6 +8,7 @@ module Hooky
       field :source
       field :ssh_host
       field :validator
+      field :options
 
       actions :send, :receive, :transmit, :snapshot, :destroy, :rollback, :clone
       default_action :send
@@ -46,9 +47,9 @@ module Hooky
 
       def transmit!
         if ssh_host
-          run_command! "zfs send #{snapshot} | ssh -o stricthostkeychecking=no #{ssh_host} zfs receive -F #{dataset}"
+          run_command! "zfs send #{options} #{snapshot} | ssh -o stricthostkeychecking=no #{ssh_host} zfs receive -F #{dataset}"
         else
-          run_command! "zfs send #{snapshot} | zfs receive -F #{dataset}"
+          run_command! "zfs send #{options} #{snapshot} | zfs receive -F #{dataset}"
         end
       end
 
