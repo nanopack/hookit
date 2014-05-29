@@ -13,6 +13,14 @@ module Hooky
       dict[key]        
     end
 
+    def log(level, message)
+      if !message
+        message = level
+        level   = :error
+      end
+      Hooky::Log.send(level, message)
+    end
+
     def method_missing(method_symbol, *args, &block)
       resource_klass = Hooky.resources.get(method_symbol)
       if resource_klass
