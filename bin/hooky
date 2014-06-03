@@ -31,7 +31,7 @@ end
 
 logger.info "hook: #{hook}, payload: #{payload}"
 
-begin 
+begin
   load "#{MODULE_DIR}/hooks/#{hook}.rb"
 rescue LoadError
   logger.error "hook: #{hook} does not exist"
