@@ -5,6 +5,7 @@ require 'hooky/error'
 require 'hooky/exit'
 require 'hooky/helper'
 require 'hooky/hook'
+require 'hooky/logger'
 require 'hooky/registry'
 require 'hooky/resource'
 require "hooky/version"
