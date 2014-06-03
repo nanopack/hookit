@@ -10,15 +10,15 @@ module Hooky
     end
 
     def get(key)
-      dict[key]        
+      dict[key]
     end
 
     def log(level, message)
-      if !message
-        message = level
-        level   = :error
-      end
-      Hooky::Log.send(level, message)
+      logger.log level, message
+    end
+
+    def logger
+      @logger ||= Hooky::Logger.new
     end
 
     def method_missing(method_symbol, *args, &block)
@@ -37,7 +37,7 @@ module Hooky
             res
           else
             resource.run actions.first
-          end            
+          end
         end
       else
         super
