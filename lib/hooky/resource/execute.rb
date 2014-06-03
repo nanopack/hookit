@@ -103,7 +103,7 @@ module Hooky
         end
 
         if path
-          com = "export PATH=\"#{path}\";"
+          com = "export PATH=\"#{path}\"; #{com}"
         end
 
         if cwd
