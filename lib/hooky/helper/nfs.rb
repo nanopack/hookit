@@ -39,7 +39,7 @@ module Hooky
         dirs = strip_leading_slash(dirs)
         dirs = strip_trailing_slash(dirs)
         dirs = remove_nested(dirs)
-        return dirs
+        dirs
       end
      
       def remove_empty(dirs)
