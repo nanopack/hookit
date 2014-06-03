@@ -3,7 +3,7 @@ module Hooky
     module NFS
 
       def sanitize_network_dirs(payload)
-        net_dirs = ensure_format(payload)
+        net_dirs = net_dirs(payload)
 
         net_dirs.each do |component, dirs|
           net_dirs[component] = clean_writables(dirs)
@@ -14,15 +14,22 @@ module Hooky
 
       protected
 
-      def ensure_format(payload)
-        net_dirs = payload[:boxfile][:network_dirs] || payload[:boxfile][:shared_writable_dirs]
-        if net_dirs.kind_of?(Hash)
-          return net_dirs
-        elsif net_dirs.nil? or net_dirs.empty?
-          return {}
+      def net_dirs(payload)
+        key     = payload[:storage].keys.first
+        boxfile = payload[:boxfile]
+
+        if boxfile[:shared_writable_dirs]
+          {
+            key => boxfile[:shared_writable_dirs]
+          }
+        elsif boxfile[:network_dirs].is_a? Array
+          {
+            key => boxfile[:network_dirs]
+          }
         else
-          return { payload[:storage].keys.first => net_dirs }
+          boxfile[:network_dirs]
         end
+
       end
 
       def clean_writables(dirs)
