@@ -1,6 +1,8 @@
 #!/usr/bin/env ruby
 
 MODULE_DIR = "/opt/local/hooky/mod"
+LOG_LEVEL  = :error
+LOGFILE    = '/var/log/hooky/hooky.log'
 
 hook = ARGV.shift
 
@@ -18,6 +20,8 @@ require 'hooky'
 include Hooky::Hook   # payload helpers
 include Hooky::DSL    # awesome resource library
 
+set :log_level,   LOG_LEVEL
+set :logfile,     LOGFILE
 set :module_root, MODULE_DIR
 
 # require hook libs
@@ -25,8 +29,11 @@ Dir.glob("#{MODULE_DIR}/lib/*.rb").each do |file|
   require file
 end
 
+logger.info "hook: #{hook}, payload: #{payload}"
+
 begin 
   load "#{MODULE_DIR}/hooks/#{hook}.rb"
 rescue LoadError
+  logger.error "hook: #{hook} does not exist"
   $stderr.puts "hook: #{hook} does not exist"
 end
