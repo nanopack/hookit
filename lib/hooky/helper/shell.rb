@@ -14,13 +14,22 @@ module Hooky
       # strategy:
       # 1- escape the escapes
       # 2- escape quotes
-      # 3- escape dollar signs
+      # 3- escape backticks
+      # 4- escape semicolons
+      # 5- escape ampersands
+      # 6- escape pipes
+      # 7- escape dollar signs
+      # 8- escape spaces
       def escape_shell_string(str)
-        cmd.gsub!(/\\/, "\\\\\\")
-        cmd.gsub!(/"/, "\\\"")
-        cmd.gsub!(/`/, "\\`")
-        cmd.gsub!(/\$/, "\\$")
-        cmd
+        str.gsub!(/\\/, "\\\\\\")
+        str.gsub!(/"/, "\\\"")
+        str.gsub!(/`/, "\\`")
+        str.gsub!(/;/, "\\;")
+        str.gsub!(/&/, "\\&")
+        str.gsub!(/\|/, "\\|")
+        str.gsub!(/\$/, "\\$")
+        str.gsub!(/ /, "\\ ")
+        str
       end
 
     end
