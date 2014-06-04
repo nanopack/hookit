@@ -8,7 +8,7 @@ module Hooky
         level   = :error
       end
 
-      if level_to_int(level) =< level_to_int(log_level)
+      if level_to_int(level) <= level_to_int(log_level)
         send(level, message)
       end
 
