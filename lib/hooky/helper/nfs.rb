@@ -27,7 +27,7 @@ module Hooky
             key => boxfile[:network_dirs]
           }
         else
-          boxfile[:network_dirs]
+          boxfile[:network_dirs] ||= {}
         end
 
       end
