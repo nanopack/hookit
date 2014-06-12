@@ -16,6 +16,7 @@ end
 # $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 
 require 'hooky'
+require 'json'
 
 include Hooky::Hook   # payload helpers
 include Hooky::DSL    # awesome resource library
@@ -29,7 +30,9 @@ Dir.glob("#{MODULE_DIR}/lib/*.rb").each do |file|
   require file
 end
 
-logger.info "hook: #{hook}, payload: #{payload}"
+logger.info ""
+logger.info "hook: #{hook}"
+logger.info "payload: #{payload.to_json}"
 
 begin
   load "#{MODULE_DIR}/hooks/#{hook}.rb"
