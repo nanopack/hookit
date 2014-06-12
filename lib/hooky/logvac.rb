@@ -12,7 +12,7 @@ module Hooky
     def post(message)
       connection.post("/deploy/#{@app}") do |req|
         req.headers[:x_auth_token] = @token
-        req.headers[:x_deploy_id]  = @deploy
+        req.headers[:x_deploy_id]  = @build
         req.body = message
       end
     end
