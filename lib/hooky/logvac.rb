@@ -26,7 +26,7 @@ module Hooky
 
     def connection
       @connection ||= Faraday.new(url: 'http://logvac.admin.pagodabox.io:6361') do |faraday|
-        faraday.adapter = :excon
+        faraday.adapter :excon
       end
     end
 
