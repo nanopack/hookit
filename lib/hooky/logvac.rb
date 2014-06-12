@@ -18,7 +18,7 @@ module Hooky
     end
     alias :print :post
 
-    def puts(message)
+    def puts(message='')
       post("#{message}\n")
     end
 
