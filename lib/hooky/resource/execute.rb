@@ -12,7 +12,7 @@ module Hooky
       field :returns
       field :timeout
       field :stream
-      field :stream_prefix
+      field :on_data
       field :validator
 
       actions :run
@@ -55,44 +55,34 @@ module Hooky
           res = `#{cmd}`
           code = $?.exitstatus
           unexpected_exit(code) unless code == returns
-          return validate!(res)
+          validate! res
         end
       end
 
       def stream!
-        STDOUT.sync = STDERR.sync = true
-        STDOUT.print stream_prefix if stream_prefix
-
         result = ""
+
+        STDOUT.sync = STDERR.sync = true # don't buffer stdout/stderr
 
         ::IO.popen(cmd, :err=>[:child, :out]) do |out|
           eof = false
           until eof do
             begin
-              if stream_prefix
-                @chunck = out.readpartial(4096).gsub("\n", "\n#{stream_prefix}")
-                STDOUT.print @chunck
-              else
-                @chunck = out.readpartial(4096)
-                STDOUT.print @chunck
+              chunck = out.readpartial(4096)
+              if on_data.is_a? Proc
+                on_data.call(chunk)
               end
             rescue EOFError
               eof = true
             end
-            result << @chunck.to_s
+            result << chunck.to_s
           end
         end
 
-        if @chunck =~ /\n#{stream_prefix}$/
-          STDOUT.print "\b" * stream_prefix.length
-        else
-          STDOUT.print "\n"
-        end
-        
         code = $?.exitstatus
         unexpected_exit(code) unless code == returns
 
-        return validate!(result)
+        validate! result
       end
 
       def cmd
