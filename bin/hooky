@@ -18,8 +18,7 @@ end
 require 'hooky'
 require 'json'
 
-include Hooky::Hook   # payload helpers
-include Hooky::DSL    # awesome resource library
+include Hooky::Hook   # payload helpers / resource dsl
 
 set :log_level,   LOG_LEVEL
 set :logfile,     LOGFILE
