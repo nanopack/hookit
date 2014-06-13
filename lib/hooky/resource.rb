@@ -10,6 +10,7 @@ require 'hooky/resource/scp'
 require 'hooky/resource/service'
 require 'hooky/resource/template'
 require 'hooky/resource/zfs'
+require 'hooky/resource/logrotate'
 
 module Hooky
   module Resource

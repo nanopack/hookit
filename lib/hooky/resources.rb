@@ -10,3 +10,4 @@ Hooky.resources.register(:scp)        { Hooky::Resource::Scp }
 Hooky.resources.register(:service)    { Hooky::Resource::Service }
 Hooky.resources.register(:template)   { Hooky::Resource::Template }
 Hooky.resources.register(:zfs)        { Hooky::Resource::Zfs }
+Hooky.resources.register(:logrotate)  { Hooky::Resource::Logrotate }
