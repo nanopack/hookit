@@ -9,8 +9,6 @@ module Hooky
         end
       end
 
-      protected
-
       # strategy:
       # 1- escape the escapes
       # 2- escape quotes
