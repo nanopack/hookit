@@ -4,13 +4,14 @@ require 'hooky/resource/execute'
 require 'hooky/resource/file'
 require 'hooky/resource/hook_file'
 require 'hooky/resource/link'
+require 'hooky/resource/logrotate'
 require 'hooky/resource/mount'
 require 'hooky/resource/rsync'
+require 'hooky/resource/socket'
 require 'hooky/resource/scp'
 require 'hooky/resource/service'
 require 'hooky/resource/template'
 require 'hooky/resource/zfs'
-require 'hooky/resource/logrotate'
 
 module Hooky
   module Resource
