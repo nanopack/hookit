@@ -25,7 +25,7 @@ module Hooky
       protected
 
       def create!
-        `logadm -w #{path} -s #{filesize ||= '10m'} -S #{max_size ||= '500m'} -C #{count ||= '10'} -N`
+        `logadm -c -w #{path} -s #{filesize ||= '10m'} -S #{max_size ||= '500m'} -C #{count ||= '10'} -N`
       end
 
     end
