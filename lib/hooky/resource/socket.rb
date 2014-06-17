@@ -7,7 +7,7 @@ module Hooky
       field :service
       field :max_checks
 
-      actions :listening, :no_connections
+      actions :listening, :no_connections, :reset
       default_action :listening
 
       def initialize(name)
@@ -22,6 +22,8 @@ module Hooky
           check_listening!
         when :no_connections
           check_no_connections!
+        when :reset
+          reset!
         end
       end
 
@@ -53,6 +55,11 @@ module Hooky
             exit(count + 10)
           end
         end
+      end
+
+      def reset!
+        registry("#{service}.listening", 0)
+        registry("#{service}.no_connections", 0)
       end
 
     end
