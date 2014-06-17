@@ -47,7 +47,7 @@ module Hooky
         # increment check
         registry("#{service}.no_connections", registry("#{service}.no_connections").to_i + 1)
 
-        unless `netstat -an | grep 'ESTABLISHED' | awk '{ print $1 }' | grep -c "$(ifconfig #{interface} | grep inet | awk '{ print $2 }')\.#{port}"`.empty?
+        unless `netstat -an | grep 'ESTABLISHED' | awk '{ print $1 }' | grep "$(ifconfig #{interface} | grep inet | awk '{ print $2 }')\.#{port}"`.empty?
           count = registry("#{service}.no_connections").to_i
           if count <= max_checks
             exit(count + 10)
