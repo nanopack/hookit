@@ -68,14 +68,14 @@ module Hooky
           eof = false
           until eof do
             begin
-              chunck = out.readpartial(4096)
-              if on_data.is_a? Proc
+              chunk = out.readpartial(4096)
+              if on_data and on_data.respond_to? :call
                 on_data.call(chunk)
               end
             rescue EOFError
               eof = true
             end
-            result << chunck.to_s
+            result << chunk.to_s
           end
         end
 
