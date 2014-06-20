@@ -69,8 +69,8 @@ module Hooky
           until eof do
             begin
               chunk = out.readpartial(4096)
-              if on_data and on_data.respond_to? :call
-                on_data.call(chunk)
+              if on_data and on_data.respond_to? :print
+                on_data.print(chunk)
               end
             rescue EOFError
               eof = true
