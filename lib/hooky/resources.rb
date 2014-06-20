@@ -7,6 +7,7 @@ Hooky.resources.register(:hooky_file)     { Hooky::Resource::HookFile }
 Hooky.resources.register(:link)           { Hooky::Resource::Link }
 Hooky.resources.register(:logrotate)      { Hooky::Resource::Logrotate }
 Hooky.resources.register(:mount)          { Hooky::Resource::Mount }
+Hooky.resources.register(:package)        { Hooky::Resource::Package }
 Hooky.resources.register(:rsync)          { Hooky::Resource::Rsync }
 Hooky.resources.register(:scp)            { Hooky::Resource::Scp }
 Hooky.resources.register(:service)        { Hooky::Resource::Service }
