@@ -31,7 +31,7 @@ module Hooky
 
       def create!
         args = ['f']
-        args << 's' if link_type == :symbolic
+        args << 'sn' if link_type == :symbolic
         cmd = "ln -#{args.join} #{to} #{target_file}"
         `#{cmd}`
         code = $?.exitstatus
