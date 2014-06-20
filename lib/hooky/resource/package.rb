@@ -53,7 +53,11 @@ module Hooky
       end
 
       def package
-        "#{package_name}#{if (version) ? "-#{version}" : '' }"
+        if version
+          "#{package_name}-#{version}"
+        else
+          package_name
+        end
       end
 
       def pkgin
