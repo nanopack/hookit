@@ -14,6 +14,7 @@ module Hooky
       field :stream
       field :on_data
       field :validator
+      field :ignore_exit
 
       actions :run
       default_action :run
@@ -139,7 +140,7 @@ module Hooky
       end
 
       def unexpected_exit(res)
-        raise Hooky::Error::UnexpectedExit, "'#{name}' exited with #{res}, expected #{returns}"
+        raise Hooky::Error::UnexpectedExit, "'#{name}' exited with #{res}, expected #{returns}" unless ignore_exit
       end
 
     end
