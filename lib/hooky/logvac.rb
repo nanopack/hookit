@@ -4,15 +4,15 @@ module Hooky
   class Logvac
     
     def initialize(opts)
-      @app   = opts[:app]
-      @build = opts[:build]
-      @token = opts[:token]
+      @app    = opts[:app]
+      @deploy = opts[:deploy]
+      @token  = opts[:token]
     end
 
     def post(message)
       connection.post("/deploy/#{@app}") do |req|
         req.headers[:x_auth_token] = @token
-        req.headers[:x_deploy_id]  = @build
+        req.headers[:x_deploy_id]  = @deploy
         req.body = message
       end
     end
