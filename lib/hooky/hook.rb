@@ -56,7 +56,7 @@ module Hooky
       @logvac ||= Hooky::Logvac.new({
         app:    payload[:app][:id],
         token:  payload[:app][:logvac_token],
-        build:  payload[:warehouse][:build_id]
+        deploy: payload[:deploy][:id]
       })
     end
 
