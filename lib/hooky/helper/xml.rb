@@ -12,11 +12,11 @@ module Hooky
       protected
 
       def sanitize_xml_string(str)
-        str.gsub!(/&/, '&amp;')
-        str.gsub!(/</, '&lt;')
-        str.gsub!(/>/, '&gt;')
-        str.gsub!(/"/, '&quot;')
-        str.gsub!(/'/, '&apos;')
+        str = str.gsub(/&/, '&amp;')
+        str = str.gsub(/</, '&lt;')
+        str = str.gsub(/>/, '&gt;')
+        str = str.gsub(/"/, '&quot;')
+        str = str.gsub(/'/, '&apos;')
         str
       end
 

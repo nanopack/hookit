@@ -19,14 +19,14 @@ module Hooky
       # 7- escape dollar signs
       # 8- escape spaces
       def escape_shell_string(str)
-        str.gsub!(/\\/, "\\\\\\")
-        str.gsub!(/"/, "\\\"")
-        str.gsub!(/`/, "\\`")
-        str.gsub!(/;/, "\\;")
-        str.gsub!(/&/, "\\&")
-        str.gsub!(/\|/, "\\|")
-        str.gsub!(/\$/, "\\$")
-        str.gsub!(/ /, "\\ ")
+        str = str.gsub(/\\/, "\\\\\\")
+        str = str.gsub(/"/, "\\\"")
+        str = str.gsub(/`/, "\\`")
+        str = str.gsub(/;/, "\\;")
+        str = str.gsub(/&/, "\\&")
+        str = str.gsub(/\|/, "\\|")
+        str = str.gsub(/\$/, "\\$")
+        str = str.gsub(/ /, "\\ ")
         str
       end
 
