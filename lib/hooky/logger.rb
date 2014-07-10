@@ -1,6 +1,13 @@
 module Hooky
   class Logger
     
+    attr_reader :log_file, :log_level
+
+    def initialize(file, level)
+      @log_file  = file   || '/var/log/hooky/hooky.log'
+      @log_level = level  || :error
+    end
+
     def log(level, message)
 
       if not message
@@ -33,13 +40,9 @@ module Hooky
     protected
 
     def log!(message)
-      File.open logfile, 'a'  do |f| 
+      File.open log_file, 'a'  do |f| 
         f.write message
       end
-    end
-
-    def logfile
-      dict[:logfile] || '/var/log/hooky/hooky.log'
     end
 
     def level_to_int(level)
@@ -49,10 +52,6 @@ module Hooky
       when :info  then 3
       when :debug then 4
       end
-    end
-
-    def log_level
-      dict[:log_level] || :error
     end
 
   end

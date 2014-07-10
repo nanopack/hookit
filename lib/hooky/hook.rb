@@ -49,7 +49,7 @@ module Hooky
     end
 
     def logger
-      @logger ||= Hooky::Logger.new
+      @logger ||= Hooky::Logger.new(get(:logfile), get(:log_level))
     end
 
     def logvac
