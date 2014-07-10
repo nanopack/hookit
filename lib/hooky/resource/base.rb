@@ -5,8 +5,8 @@ module Hooky
       class << self
 
         def field(key)
-          define_method key do |*args|
-            if data = args[0]
+          define_method key do |*args, &block|
+            if data = block || args[0]
               instance_variable_set("@#{key}", data)
             else
               instance_variable_get("@#{key}")

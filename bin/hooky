@@ -1,8 +1,8 @@
 #!/usr/bin/env ruby
 
-MODULE_DIR = "/opt/local/hooky/mod"
-LOG_LEVEL  = :error
-LOGFILE    = '/var/log/hooky/hooky.log'
+MODULE_DIR = ENV['MODULE_DIR']  || "/opt/local/hooky/mod"
+LOG_LEVEL  = ENV['LOG_LEVEL']   || :error
+LOGFILE    = ENV['LOGFILE']     || '/var/log/hooky/hooky.log'
 
 hook = ARGV.shift
 
@@ -12,8 +12,8 @@ if not hook
 end
 
 # uncomment if dev only
-# lib = File.expand_path('../../lib', __FILE__)
-# $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
+lib = File.expand_path('../../lib', __FILE__)
+$LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 
 require 'hooky'
 require 'json'
