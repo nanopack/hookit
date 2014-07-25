@@ -19,11 +19,34 @@ module Hooky
     end
 
     def converge_value(template, value)
+      if template[:type] == :array
+        value = sanitize_array(template, value)
+      end
+
       if valid? template, value
         value
       else
         template[:default]
       end
+    end
+
+    def sanitize_array(template, value)
+
+      case template[:of]
+      when :byte
+        value = [value] if ( valid_byte? value )
+      when :file
+        value = [value] if ( valid_file? value )
+      when :folder
+        value = [value] if ( valid_folder? value )
+      when :integer
+        value = [value] if ( valid_integer? value )
+      when :on_off
+        value = [value] if ( valid_on_off? value )
+      when :string
+        value = [value] if ( valid_string? value )
+      end
+      value
     end
 
     def valid?(template, value)
