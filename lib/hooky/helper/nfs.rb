@@ -33,7 +33,11 @@ module Hooky
       end
 
       def clean_writables(dirs)
-        dirs = dirs.map(&:to_s)
+        begin
+          dirs = dirs.map{|i| i.to_s}
+        rescue
+          dirs = [dirs].map{|i| i.to_s}
+        end
         dirs = remove_empty(dirs)
         dirs = filter_offensive(dirs)
         dirs = strip_leading_slash(dirs)
