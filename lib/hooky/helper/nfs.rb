@@ -22,6 +22,10 @@ module Hooky
           {
             key => boxfile[:shared_writable_dirs]
           }
+        elsif boxfile[:network_dirs].is_a? String
+          {
+            key => [boxfile[:network_dirs]]
+          }
         elsif boxfile[:network_dirs].is_a? Array
           {
             key => boxfile[:network_dirs]
