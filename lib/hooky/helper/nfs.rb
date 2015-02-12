@@ -12,8 +12,6 @@ module Hooky
         net_dirs
       end
 
-      protected
-
       def net_dirs(payload)
         key     = payload[:storage].keys.first
         boxfile = payload[:boxfile]
@@ -47,7 +45,7 @@ module Hooky
         dirs = strip_leading_slash(dirs)
         dirs = strip_trailing_slash(dirs)
         dirs = remove_nested(dirs)
-        dirs
+        dirs.uniq
       end
      
       def remove_empty(dirs)
@@ -61,7 +59,8 @@ module Hooky
         dirs.inject([]) do |res, elem|
           if elem[0] != '.'
             # ensure not going up a directory
-            unless elem =~ /\*|\.?\.\//
+            # ensure spaces are intended
+            unless elem =~ /(\*|\.?\.\/|(?<!\\)\s)/
               res << elem
             end
           end
