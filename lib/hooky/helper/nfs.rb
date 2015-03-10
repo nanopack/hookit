@@ -60,7 +60,8 @@ module Hooky
           if elem[0] != '.'
             # ensure not going up a directory
             # ensure spaces are intended
-            unless elem =~ /(\*|\.?\.\/|(?<!\\)\s)/
+            # ensure directory is not . or /
+            unless elem =~ /(\*|\.?\.\/|(?<!\\)\s)|^\.$|^\/$/
               res << elem
             end
           end
