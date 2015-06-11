@@ -6,9 +6,9 @@ require 'hooky/version'
 Gem::Specification.new do |spec|
   spec.name          = "hooky"
   spec.version       = Hooky::VERSION
-  spec.authors       = ["Tyler Flint"]
+  spec.authors       = ["Tyler Flint", "Greg Linton"]
   spec.email         = ["tyler@pagodabox.com"]
-  spec.summary       = %q{Hooky is the framework to provide hooky scripts with re-usable components and resources via an elegant dsl.}
+  spec.summary       = %q{Hooky is a framework to provide hooky scripts with re-usable components and resources via an elegant dsl.}
   spec.description   = %q{The core framework to provide hooky scripts with re-usable components.}
   spec.homepage      = ""
   spec.license       = "MIT"
