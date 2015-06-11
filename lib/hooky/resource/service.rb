@@ -4,12 +4,23 @@ module Hooky
 
       field :recursive
       field :service_name
+      field :init
 
       actions :enable, :disable, :start, :stop, :restart, :reload
       default_action :enable
 
       def initialize(name)
         service_name(name) unless service_name
+
+        # if init scheme is not provided, try to set reasonable defaults
+        if not init
+          case platform.name
+          when 'smartos'
+            init(:smf)
+          when 'ubuntu'
+            init(:upstart)
+          end
+        end
       end
 
       def run(action)
@@ -32,26 +43,44 @@ module Hooky
       protected
 
       def enable!
-        run_command! "svcadm enable -s #{"-r" if recursive} #{service_name}"
+        case init
+        when :smf
+          run_command! "svcadm enable -s #{"-r" if recursive} #{service_name}"
+        when :runit
+          run_command! "sv start #{service_name}"
+        else
+          Hooky::Error::UnsupportedOption, "Unsupported init schema '#{init}'"
+        end
       end
 
       def disable!
-        run_command! "svcadm disable -s #{service_name}"
+        case init
+        when :smf
+          run_command! "svcadm disable -s #{service_name}"
+        when :runit
+          run_command! "sv stop #{service_name}"
+        else
+          Hooky::Error::UnsupportedOption, "Unsupported init schema '#{init}'"
+        end
       end
 
       def restart!
-        run_command! "svcadm restart #{service_name}"
+        case init
+        when :smf
+          run_command! "svcadm restart #{service_name}"
+        when :runit
+          disable!; enable!
+        else
+          Hooky::Error::UnsupportedOption, "Unsupported init schema '#{init}'"
+        end
       end
 
       def reload!
-        run_command! "svcadm refresh #{service_name}"
-      end
-
-      def run_command!(cmd, expect_code=0)
-        `#{cmd}`
-        code = $?.exitstatus
-        if code != expect_code
-          raise Hooky::Error::UnexpectedExit, "#{cmd} failed with exit code '#{code}'"
+        case init
+        when :smf
+          run_command! "svcadm refresh #{service_name}"
+        else
+          Hooky::Error::UnsupportedOption, "Unsupported init schema '#{init}'"
         end
       end
 

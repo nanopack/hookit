@@ -90,6 +90,16 @@ module Hooky
         end
       end
 
+      protected
+
+      def run_command!(cmd, expect_code=0)
+        `#{cmd}`
+        code = $?.exitstatus
+        if code != expect_code
+          raise Hooky::Error::UnexpectedExit, "#{cmd} failed with exit code '#{code}'"
+        end
+      end
+
     end
   end
 end
