@@ -60,6 +60,20 @@ module Hooky
       })
     end
 
+    def platform
+      @platform ||= detect_platform
+    end
+
+    def detect_platform
+      Hooky.platforms.each do |key, value|
+        platform = value.new
+        if platform.detect?
+          return platform
+        end
+      end
+      false
+    end
+
     # awesome resource-backed dsl
     def method_missing(method_symbol, *args, &block)
       resource_klass = Hooky.resources.get(method_symbol)

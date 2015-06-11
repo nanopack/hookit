@@ -25,7 +25,12 @@ module Hooky
       protected
 
       def create!
-        `logadm -c -w #{path} -s #{filesize ||= '10m'} -S #{max_size ||= '500m'} -C #{count ||= '10'} -N`
+        case platform.os
+        when 'sun'
+          `logadm -c -w #{path} -s #{filesize ||= '10m'} -S #{max_size ||= '500m'} -C #{count ||= '10'} -N`
+        else
+          raise Hooky::Error::UnsupportedPlatform, "unsupported platform '#{platform.name}'"
+        end
       end
 
     end
