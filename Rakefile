@@ -1,17 +1,10 @@
 require "bundler/gem_tasks"
 
-desc "Create tag v#{Hooky::VERSION}"
+desc "Create tag v#{Hookit::VERSION}"
 task :tag do
   
-  puts "tagging version v#{Hooky::VERSION}"
-  `git tag -a v#{Hooky::VERSION} -m "Version #{Hooky::VERSION}"`
+  puts "tagging version v#{Hookit::VERSION}"
+  `git tag -a v#{Hookit::VERSION} -m "Version #{Hookit::VERSION}"`
   `git push origin --tags`
   
-end
-
-desc "Create tag v#{Hooky::VERSION} and build and push hooky-#{Hooky::VERSION}.gem to Gemfury"
-task :fury => [:tag, :build] do
-
-  puts `fury push pkg/hooky-#{Hooky::VERSION}.gem`
-
 end
