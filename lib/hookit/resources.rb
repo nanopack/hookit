@@ -3,7 +3,7 @@ Hookit.resources.register(:ensure_socket)  { Hookit::Resource::Socket }
 Hookit.resources.register(:execute)        { Hookit::Resource::Execute }
 Hookit.resources.register(:file)           { Hookit::Resource::File }
 Hookit.resources.register(:hook_file)      { Hookit::Resource::HookFile }
-Hookit.resources.register(:hookit_file)     { Hookit::Resource::HookFile }
+Hookit.resources.register(:hookit_file)    { Hookit::Resource::HookFile }
 Hookit.resources.register(:link)           { Hookit::Resource::Link }
 Hookit.resources.register(:logrotate)      { Hookit::Resource::Logrotate }
 Hookit.resources.register(:mount)          { Hookit::Resource::Mount }
