@@ -13,6 +13,7 @@ module Hookit
       field :timeout
       field :stream
       field :on_data
+      field :on_exit
       field :validator
       field :ignore_exit
 
@@ -55,7 +56,11 @@ module Hookit
         Timeout::timeout(timeout) do
           res = `#{cmd}`
           code = $?.exitstatus
-          unexpected_exit(code) unless code == returns
+          if on_exit and on_exit.respond_to? :call
+            on_exit.call(code)
+          else
+            unexpected_exit(code) unless code == returns
+          end
           validate! res
         end
       end
@@ -81,7 +86,12 @@ module Hookit
         end
 
         code = $?.exitstatus
-        unexpected_exit(code) unless code == returns
+
+        if on_exit and on_exit.respond_to? :call
+          on_exit.call(code)
+        else
+          unexpected_exit(code) unless code == returns
+        end
 
         validate! result
       end
