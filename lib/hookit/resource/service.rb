@@ -49,7 +49,7 @@ module Hookit
         when :runit
           run_command! "sv start #{service_name}"
         else
-          Hookit::Error::UnsupportedOption, "Unsupported init schema '#{init}'"
+          Hookit::Error::UnsupportedOption "Unsupported init schema '#{init}'"
         end
       end
 
@@ -60,7 +60,7 @@ module Hookit
         when :runit
           run_command! "sv stop #{service_name}"
         else
-          Hookit::Error::UnsupportedOption, "Unsupported init schema '#{init}'"
+          Hookit::Error::UnsupportedOption "Unsupported init schema '#{init}'"
         end
       end
 
@@ -71,7 +71,7 @@ module Hookit
         when :runit
           disable!; enable!
         else
-          Hookit::Error::UnsupportedOption, "Unsupported init schema '#{init}'"
+          Hookit::Error::UnsupportedOption "Unsupported init schema '#{init}'"
         end
       end
 
@@ -80,7 +80,7 @@ module Hookit
         when :smf
           run_command! "svcadm refresh #{service_name}"
         else
-          Hookit::Error::UnsupportedOption, "Unsupported init schema '#{init}'"
+          Hookit::Error::UnsupportedOption "Unsupported init schema '#{init}'"
         end
       end
 

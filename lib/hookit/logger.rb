@@ -1,11 +1,13 @@
 module Hookit
   class Logger
+    require 'fileutils'
     
     attr_reader :log_file, :log_level
 
     def initialize(file, level)
       @log_file  = file   || '/var/log/hookit/hookit.log'
       @log_level = level  || :error
+      ::FileUtils.mkdir_p(File.dirname(@log_file))
     end
 
     def log(level, message)
