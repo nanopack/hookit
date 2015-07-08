@@ -41,7 +41,12 @@ module Hookit
 
       def mount!
         ::FileUtils.mkdir_p(mount_point)
-        run_command! "mount -O -F #{fstype} -o retry=5,timeo=300 #{options!(as_arg=true)} #{device} #{mount_point}"
+        case platform.name
+        when 'smartos'
+          run_command! "mount -O -F #{fstype} -o retry=5,timeo=300 #{options!(as_arg=true)} #{device} #{mount_point}"
+        when 'ubuntu'
+          run_command! "mount -t #{fstype} -o retry=5,timeo=300 #{options!(as_arg=true)} #{device} #{mount_point}"
+        end
       end
 
       def umount!
@@ -50,11 +55,21 @@ module Hookit
 
       def enable!
         entry = "#{device}\t#{device =~ /^\/dev/ ? device : "-"}\t#{mount_point}\t#{fstype}\t#{pass}\tyes\t#{options!}"
-        `echo "#{entry}" >> /etc/vfstab`
+        case platform.name
+        when 'smartos'
+          `echo "#{entry}" >> /etc/vfstab`
+        when 'ubuntu'
+          `echo "#{entry}" >> /etc/fstab`
+        end
       end
 
       def disable!
-        `egrep -v "#{device}.*#{mount_point}" /etc/vfstab > /tmp/vfstab.tmp; mv -f /tmp/vfstab.tmp /etc/vfstab`
+        case platform.name
+        when 'smartos'
+          `egrep -v "#{device}.*#{mount_point}" /etc/vfstab > /tmp/vfstab.tmp; mv -f /tmp/vfstab.tmp /etc/vfstab`
+        when 'ubuntu'
+          `egrep -v "#{device}.*#{mount_point}" /etc/fstab > /tmp/vfstab.tmp; mv -f /tmp/vfstab.tmp /etc/vfstab`
+        end
       end
 
       def options!(as_arg=false)
