@@ -14,6 +14,15 @@ module Hookit
         service name unless service
         max_checks 3 unless max_checks
         super
+
+        case platform.os
+        when 'sun'
+          @active_com=`netstat -an | egrep '\*\.#{port}' | grep LISTEN`
+          @inactive_com=`netstat -an | grep 'ESTABLISHED' | awk '{ print $1 }' | grep "$(ifconfig #{interface} | grep inet | awk '{ print $2 }')\.#{port}"`
+        else
+          @active_com=`netstat -an | egrep ':#{port}' | grep LISTEN`
+          @inactive_com=`netstat -an | grep 'ESTABLISHED' | awk '{ print $4 }' | grep "$(ifconfig #{interface} | awk '/inet addr/ { print $2}' | cut -f2 -d':' | tr -d '\n'):#{port}"`
+        end
       end
 
       def run(action)
@@ -33,9 +42,10 @@ module Hookit
         # increment check
         registry("#{service}.listening", registry("#{service}.listening").to_i + 1)
 
-        if `netstat -an | grep '\*\.#{port}' | grep LISTEN`.empty?
+        if `#{@active_com}`.empty?
           count = registry("#{service}.listening").to_i
           if count <= max_checks
+            sleep 1
             exit(count + 10)
           else
             $stderr.puts "ERROR: timed out waiting for #{service} to listen"
@@ -49,8 +59,9 @@ module Hookit
         # increment check
         registry("#{service}.no_connections", registry("#{service}.no_connections").to_i + 1)
 
-        unless `netstat -an | grep 'ESTABLISHED' | awk '{ print $1 }' | grep "$(ifconfig #{interface} | grep inet | awk '{ print $2 }')\.#{port}"`.empty?
+        unless `#{@inactive_com}`.empty?
           count = registry("#{service}.no_connections").to_i
+          sleep 1
           if count <= max_checks
             exit(count + 10)
           end
