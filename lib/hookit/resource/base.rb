@@ -95,6 +95,12 @@ module Hookit
       def run_command!(cmd, expect_code=0)
         `#{cmd}`
         code = $?.exitstatus
+
+        # break early if the caller doesn't want to validate the exit code
+        if expect_code == false
+          return
+        end
+
         if code != expect_code
           raise Hookit::Error::UnexpectedExit, "#{cmd} failed with exit code '#{code}'"
         end
