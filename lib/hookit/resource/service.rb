@@ -19,6 +19,8 @@ module Hookit
             init(:smf)
           when 'ubuntu'
             init(:upstart)
+          when 'docker'
+            init(:runit)
           end
         end
       end
