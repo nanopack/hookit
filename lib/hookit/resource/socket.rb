@@ -17,11 +17,11 @@ module Hookit
 
         case platform.os
         when 'sun'
-          @active_com=`netstat -an | egrep '\*\.#{port}' | grep LISTEN`
-          @inactive_com=`netstat -an | grep 'ESTABLISHED' | awk '{ print $1 }' | grep "$(ifconfig #{interface} | grep inet | awk '{ print $2 }')\.#{port}"`
+          @active_com   = "netstat -an | egrep '\*\.#{port}' | grep LISTEN"
+          @inactive_com = "netstat -an | grep 'ESTABLISHED' | awk '{ print $1 }' | grep \"$(ifconfig #{interface} | grep inet | awk '{ print $2 }')\.#{port}\""
         else
-          @active_com=`netstat -an | egrep ':#{port}' | grep LISTEN`
-          @inactive_com=`netstat -an | grep 'ESTABLISHED' | awk '{ print $4 }' | grep "$(ifconfig #{interface} | awk '/inet addr/ { print $2}' | cut -f2 -d':' | tr -d '\n'):#{port}"`
+          @active_com   = "netstat -an | egrep ':#{port}' | grep LISTEN"
+          @inactive_com = "netstat -an | grep 'ESTABLISHED' | awk '{ print $4 }' | grep \"$(ifconfig #{interface} | awk '/inet addr/ { print $2}' | cut -f2 -d':' | tr -d '\n'):#{port}\""
         end
       end
 
