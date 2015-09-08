@@ -49,9 +49,9 @@ module Hookit
         when :smf
           run_command! "svcadm enable -s #{"-r" if recursive} #{service_name}"
         when :runit
-          # fail fast if we don't have an runit run configuration
+          # exit fast if we don't have an runit run configuration
           if not ::File.exist?("/etc/service/#{service_name}/run")
-            raise Hookit::Error::MissingConfiguration "Expecting service configuration file at: /etc/service/#{service_name}/run"
+            return
           end
 
           # register and potentially start the service
