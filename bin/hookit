@@ -39,7 +39,12 @@ begin
     logger.error "hook: #{hook} does not exist"
     $stderr.puts "hook: #{hook} does not exist"
   end
-rescue
-  $stderr.puts "Something bad happened"
+rescue Exception => e
+  $stderr.puts "There has been an error."
+  $stderr.puts "If you choose to submit a ticket,"
+  $stderr.puts "please include the following backtrace."
+  $stderr.puts "======================================="
+  $stderr.puts e.backtrace
+  $stderr.puts "======================================="
   exit 1
 end
