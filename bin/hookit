@@ -1,41 +1,45 @@
 #!/usr/bin/env ruby
-
-MODULE_DIR = ENV['MODULE_DIR']  || "/opt/local/hookit/mod"
-LOG_LEVEL  = ENV['LOG_LEVEL']   || :error
-LOGFILE    = ENV['LOGFILE']     || '/var/log/hookit/hookit.log'
-
-hook = ARGV.shift
-
-if not hook
-  $stderr.puts "hook is required"
-  exit 1
-end
-
-# uncomment if dev only
-lib = File.expand_path('../../lib', __FILE__)
-$LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-
-require 'hookit'
-require 'json'
-
-include Hookit::Hook   # payload helpers / resource dsl
-
-set :log_level,   LOG_LEVEL
-set :logfile,     LOGFILE
-set :module_root, MODULE_DIR
-
-# require hook libs
-Dir.glob("#{MODULE_DIR}/lib/*.rb").each do |file|
-  require file
-end
-
-logger.info ""
-logger.info "hook: #{hook}"
-logger.info "payload: #{payload.to_json}"
-
 begin
-  load "#{MODULE_DIR}/hooks/#{hook}.rb"
-rescue LoadError
-  logger.error "hook: #{hook} does not exist"
-  $stderr.puts "hook: #{hook} does not exist"
+  MODULE_DIR = ENV['MODULE_DIR']  || "/opt/local/hookit/mod"
+  LOG_LEVEL  = ENV['LOG_LEVEL']   || :error
+  LOGFILE    = ENV['LOGFILE']     || '/var/log/hookit/hookit.log'
+
+  hook = ARGV.shift
+
+  if not hook
+    $stderr.puts "hook is required"
+    exit 1
+  end
+
+  # uncomment if dev only
+  lib = File.expand_path('../../lib', __FILE__)
+  $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
+
+  require 'hookit'
+  require 'json'
+
+  include Hookit::Hook   # payload helpers / resource dsl
+
+  set :log_level,   LOG_LEVEL
+  set :logfile,     LOGFILE
+  set :module_root, MODULE_DIR
+
+  # require hook libs
+  Dir.glob("#{MODULE_DIR}/lib/*.rb").each do |file|
+    require file
+  end
+
+  logger.info ""
+  logger.info "hook: #{hook}"
+  logger.info "payload: #{payload.to_json}"
+
+  begin
+    load "#{MODULE_DIR}/hooks/#{hook}.rb"
+  rescue LoadError
+    logger.error "hook: #{hook} does not exist"
+    $stderr.puts "hook: #{hook} does not exist"
+  end
+rescue
+  $stderr.puts "Something bad happened"
+  exit 1
 end
