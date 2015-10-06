@@ -41,10 +41,10 @@ module Hookit
 
       def mount!
         ::FileUtils.mkdir_p(mount_point)
-        case platform.name
-        when 'smartos'
+        case platform.os
+        when 'sun'
           run_command! "mount -O -F #{fstype} -o retry=5,timeo=300 #{options!(as_arg=true)} #{device} #{mount_point}"
-        when 'ubuntu', 'docker'
+        when 'linux'
           run_command! "mount -t #{fstype} -o retry=5,timeo=300 #{options!(as_arg=true)} #{device} #{mount_point}"
         end
       end
@@ -55,19 +55,19 @@ module Hookit
 
       def enable!
         entry = "#{device}\t#{device =~ /^\/dev/ ? device : "-"}\t#{mount_point}\t#{fstype}\t#{pass}\tyes\t#{options!}"
-        case platform.name
-        when 'smartos'
+        case platform.os
+        when 'sun'
           `echo "#{entry}" >> /etc/vfstab`
-        when 'ubuntu'
+        when 'linux'
           `echo "#{entry}" >> /etc/fstab`
         end
       end
 
       def disable!
-        case platform.name
-        when 'smartos'
+        case platform.os
+        when 'sun'
           `egrep -v "#{device}.*#{mount_point}" /etc/vfstab > /tmp/vfstab.tmp; mv -f /tmp/vfstab.tmp /etc/vfstab`
-        when 'ubuntu'
+        when 'linux'
           `egrep -v "#{device}.*#{mount_point}" /etc/fstab > /tmp/vfstab.tmp; mv -f /tmp/vfstab.tmp /etc/vfstab`
         end
       end
