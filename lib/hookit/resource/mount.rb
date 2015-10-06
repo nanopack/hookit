@@ -44,7 +44,7 @@ module Hookit
         case platform.name
         when 'smartos'
           run_command! "mount -O -F #{fstype} -o retry=5,timeo=300 #{options!(as_arg=true)} #{device} #{mount_point}"
-        when 'ubuntu'
+        when 'ubuntu', 'docker'
           run_command! "mount -t #{fstype} -o retry=5,timeo=300 #{options!(as_arg=true)} #{device} #{mount_point}"
         end
       end
