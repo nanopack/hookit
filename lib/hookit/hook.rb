@@ -21,6 +21,8 @@ module Hookit
     end
 
     def registry(key, value=nil)
+      # normalize the catalog with keys
+      key = key.to_sym
       unless value.nil?
         db.put(key, value)
       else

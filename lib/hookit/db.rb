@@ -21,7 +21,7 @@ module Hookit
     end
 
     def load
-      ::MultiJson.load(::File.read(@path)) rescue {}
+      ::MultiJson.load(::File.read(@path), symbolize_keys: true) rescue {}
     end
 
     def save
