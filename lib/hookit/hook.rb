@@ -12,7 +12,7 @@ module Hookit
       if not ARGV.empty?
         MultiJson.load ARGV.first, symbolize_keys: true
       else
-        {}          
+        {}
       end
     end
 
@@ -37,7 +37,7 @@ module Hookit
     def dict
       @dict ||= {}
     end
-    
+
     def set(key, value)
       dict[key] = value
     end
@@ -52,14 +52,6 @@ module Hookit
 
     def logger
       @logger ||= Hookit::Logger.new(get(:logfile), get(:log_level))
-    end
-
-    def logvac
-      @logvac ||= Hookit::Logvac.new({
-        app:    payload[:app][:id],
-        token:  payload[:app][:logvac_token],
-        deploy: payload[:deploy][:id]
-      })
     end
 
     def platform
