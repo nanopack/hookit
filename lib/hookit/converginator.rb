@@ -18,9 +18,29 @@ module Hookit
       output
     end
 
+    def converge_hash(template, value)
+      temp = {}
+      template.each do |k, t|
+        if value.key? k
+          temp[k] = converge_value t, value[k]
+        else
+          temp[k] = t[:default]
+        end
+      end
+      temp
+    end
+
     def converge_value(template, value)
       if template[:type] == :array
         value = sanitize_array(template, value)
+      end
+
+      if template[:type] == :array and template[:of] == :hash and template[:template]
+        value.map! {|v| converge_hash(template[:template], v)}
+      end
+
+      if template[:type] == :hash and template[:template]
+        value = converge_hash(template[:template], value)
       end
 
       if valid? template, value
@@ -39,6 +59,8 @@ module Hookit
         value = [value] if ( valid_file? value )
       when :folder
         value = [value] if ( valid_folder? value )
+      when :hash
+        value = [value] if ( valid_hash? value )
       when :integer
         value = [value] if ( valid_integer? value )
       when :on_off
@@ -104,6 +126,8 @@ module Hookit
         !( value.map {|element| valid_folder? element} ).include? false
       when :integer
         !( value.map {|element| valid_integer? element} ).include? false
+      when :hash
+        !( value.map {|element| valid_hash? element} ).include? false
       when :on_off
         !( value.map {|element| valid_on_off? element} ).include? false
       when :string

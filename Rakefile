@@ -1,4 +1,5 @@
 require "bundler/gem_tasks"
+require 'rake/testtask'
 
 desc "Create tag v#{Hookit::VERSION}"
 task :tag do
@@ -8,3 +9,10 @@ task :tag do
   `git push origin --tags`
   
 end
+
+Rake::TestTask.new do |t|
+  t.libs << 'test'
+end
+
+desc "Run tests"
+task :default => :test
