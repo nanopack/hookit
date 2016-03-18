@@ -138,8 +138,7 @@ module Hookit
     end
    
     def valid_hash?(value)
-      return false if not value.is_a? Hash
-      true
+      value.is_a? Hash
     end
    
     def valid_integer?(value)
