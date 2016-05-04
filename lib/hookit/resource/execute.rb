@@ -4,7 +4,7 @@ require 'open3'
 module Hookit
   module Resource
     class Execute < Base
-      
+
       field :command
       field :cwd
       field :environment
@@ -83,7 +83,7 @@ module Hookit
             ready_pipes.each_with_index do |socket|
               if socket == stdout
                 begin
-                  chunk = socket.readpartial(4096)
+                  chunk = socket.readpartial(1)
                   if on_data and on_data.respond_to? :call
                     on_data.call(chunk)
                   end
@@ -96,7 +96,7 @@ module Hookit
                 result << chunk.to_s
               elsif socket == stderr
                 begin
-                  chunk = socket.readpartial(4096)
+                  chunk = socket.readpartial(1)
                   if on_data and on_data.respond_to? :call
                     on_data.call(chunk)
                   end
@@ -142,7 +142,7 @@ module Hookit
           com = su(user, com)
         end
 
-       com 
+       com
       end
 
       # strategy:
