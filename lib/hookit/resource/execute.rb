@@ -83,7 +83,7 @@ module Hookit
             ready_pipes.each_with_index do |socket|
               if socket == stdout
                 begin
-                  chunk = socket.readpartial(1)
+                  chunk = socket.readpartial(4096)
                   if on_data and on_data.respond_to? :call
                     on_data.call(chunk)
                   end
@@ -96,7 +96,7 @@ module Hookit
                 result << chunk.to_s
               elsif socket == stderr
                 begin
-                  chunk = socket.readpartial(1)
+                  chunk = socket.readpartial(4096)
                   if on_data and on_data.respond_to? :call
                     on_data.call(chunk)
                   end
