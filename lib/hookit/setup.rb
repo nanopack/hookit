@@ -36,9 +36,9 @@ end
 
 module_dir = File.dirname(hook)
 
-MODULE_DIR = $MODULE_DIR || ENV['MODULE_DIR'] || module_dir
-LOG_LEVEL  = $LOG_LEVEL || ENV['LOG_LEVEL'] || :error
-LOGFILE    = $LOGFILE || ENV['LOGFILE'] || '/var/log/hookit/hookit.log'
+MODULE_DIR = $MODULE_DIR  || ENV['MODULE_DIR']  || module_dir
+LOG_LEVEL  = $LOG_LEVEL   || ENV['LOG_LEVEL']   || :error
+LOGFILE    = $LOGFILE     || ENV['LOGFILE']     || '/var/log/hookit/hookit.log'
 
 require 'hookit'
 require 'json'
