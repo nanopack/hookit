@@ -48,7 +48,10 @@ module Hookit
           if validator.call(res)
             res
           else
-            raise "ERROR: execute resource \"#{name}\" failed validation!"
+            print_error(name, {
+              command: cmd,
+              failure: "failed validation"
+            })
           end
         else
           res
@@ -56,15 +59,27 @@ module Hookit
       end
 
       def run!
-        Timeout::timeout(timeout) do
-          res = `#{cmd}`
-          code = $?.exitstatus
-          if on_exit and on_exit.respond_to? :call
-            on_exit.call(code)
-          else
-            unexpected_exit(code) unless code == returns
+        begin
+          Timeout::timeout(timeout) do
+            res = `#{cmd} 2>&1`
+            code = $?.exitstatus
+            if on_exit and on_exit.respond_to? :call
+              on_exit.call(code)
+            else
+              if code != returns
+                unexpected_exit(code, res)
+              end
+            end
+            validate! res
           end
-          validate! res
+        rescue Timeout::Error
+          
+          print_error(name, {
+            command: cmd,
+            failure: "failed to return within #{timeout} seconds"
+          })
+          
+          exit 1
         end
       end
 
@@ -117,7 +132,7 @@ module Hookit
         if on_exit and on_exit.respond_to? :call
           on_exit.call(exit_status)
         else
-          unexpected_exit(exit_status) unless exit_status == returns
+          unexpected_exit(exit_status, result) unless exit_status == returns
         end
 
         validate! result
@@ -167,7 +182,7 @@ module Hookit
           env += " " if not env == ''
           env += env_string(key, val)
         end
-        (env == '')? env : "#{env}"
+        (env == '')? env : "#{env} "
       end
 
       def env_string(key, val)
@@ -175,9 +190,15 @@ module Hookit
         val = val.to_s if not val.is_a? String
         %Q{export #{key.upcase}="#{escape(val)}";}
       end
-
-      def unexpected_exit(res)
-        raise Hookit::Error::UnexpectedExit, "'#{name}' exited with #{res}, expected #{returns}" unless ignore_exit
+      
+      def unexpected_exit(res, output="")
+        return if ignore_exit
+        
+        print_error(name, {
+          exit: "#{res}",
+          command: cmd,
+          output: output
+        })
       end
 
     end

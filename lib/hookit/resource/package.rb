@@ -7,7 +7,7 @@ module Hookit
       field :version
       field :scope
 
-      actions :install
+      actions :install, :update
       default_action :install
 
       def initialize(name)
@@ -20,37 +20,20 @@ module Hookit
         case action
         when :install
           install!
+        when :update
+          update!
         end
       end
 
       def install!
-        begin
-          install_package
-        rescue Hookit::Error::UnexpectedExit
-          if not registry("pkgsrc.#{scope}.updated")
-            update_pkg_db
-            registry("pkgsrc.#{scope}.updated", true)
-            retry
-          else
-            raise
-          end
-        end
+        run_command! "#{pkgin} -y in #{package}"
+      end
+      
+      def update!
+        run_command! `#{pkgin} -y up`
       end
 
       protected
-
-      def install_package
-        `#{pkgin} -y in #{package}`
-
-        code = $?.exitstatus
-        if not code == 0
-          raise Hookit::Error::UnexpectedExit, "pkgin in #{package} failed with exit code '#{code}'"
-        end
-      end
-
-      def update_pkg_db
-        `#{pkgin} -y up`
-      end
 
       def package
         if version
@@ -66,6 +49,8 @@ module Hookit
           "/opt/local/bin/pkgin"
         when :gopagoda
           "/opt/gopagoda/bin/pkgin"
+        when :gonano
+          "/opt/gonano/bin/pkgin"
         end
       end
 

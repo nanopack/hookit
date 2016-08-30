@@ -48,8 +48,9 @@ module Hookit
             sleep 1
             exit(count + 10)
           else
-            $stderr.puts "ERROR: timed out waiting for #{service} to listen"
-            exit(Hookit::Exit::ERROR)
+            print_error(name, {
+              reason: "timed out waiting for #{service} to listen"
+            })
           end
         end
 
