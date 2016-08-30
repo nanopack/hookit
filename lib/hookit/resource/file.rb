@@ -36,7 +36,11 @@ module Hookit
       protected
 
       def create!
-        ::File.write path, (content || "")
+        begin
+          ::File.write path, (content || "")
+        rescue Exception => e
+          unexpected_failure("create file", e.message)
+        end
       end
 
       def create_if_missing!
@@ -46,26 +50,40 @@ module Hookit
       end
 
       def delete!
-        ::File.delete path
+        begin
+          ::File.delete path
+        rescue Exception => e
+          unexpected_failure("delete file", e.message)
+        end
       end
 
       def chown!
         return unless owner or group
         if ::File.exists? path
-          `chown #{(group.nil?) ? owner : "#{owner}:#{group}"} #{path}`
+          run_command! "chown #{(group.nil?) ? owner : "#{owner}:#{group}"} #{path}"
         end
       end
 
       def chmod!
         if ::File.exists? path and mode
-          ::File.chmod(mode, path)
+          begin
+            ::File.chmod(mode, path)
+          rescue Exception => e
+            unexpected_failure("chmod file", e.message)
+          end
         end
       end
 
       def touch!
-        `touch -c #{path}`
+        run_command! "touch -c #{path}"
       end
 
+      def unexpected_failure(message, reason)
+        print_error(message, {
+          path: path,
+          reason: reason
+        })
+      end
     end
   end
 end

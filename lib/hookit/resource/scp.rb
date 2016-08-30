@@ -31,7 +31,7 @@ module Hookit
       end
 
       def copy!
-        run_command!("scp -q#{preserve!}#{recursive!}B#{compression!} #{config!} #{port!} #{cipher!} #{identity!} #{ssh_options!} #{source} #{destination}")
+        run_command! "scp -q#{preserve!}#{recursive!}B#{compression!} #{config!} #{port!} #{cipher!} #{identity!} #{ssh_options!} #{source} #{destination}"
       end
 
       def cipher!
@@ -73,15 +73,6 @@ module Hookit
         (return "-o #{ssh_options}") if ssh_options
         ""
       end
-
-      def run_command!(cmd, expect_code=0)
-        `#{cmd}`
-        code = $?.exitstatus
-        if code != expect_code
-          raise Hookit::Error::UnexpectedExit, "#{cmd} failed with exit code '#{code}'"
-        end
-      end
-
     end
   end
 end

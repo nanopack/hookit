@@ -72,12 +72,7 @@ module Hookit
             # just in case the service is registered but not started, try
             # to start the service one more time
             run_command! "sv start #{service_name}"
-          else
-            raise Hookit::Error::UnexpectedExit "Service #{service_name} did not register within 6 seconds."
           end
-
-        else
-          raise Hookit::Error::UnsupportedOption "Unsupported init schema '#{init}'"
         end
       end
 
@@ -87,8 +82,6 @@ module Hookit
           run_command! "svcadm disable -s #{service_name}"
         when :runit
           run_command! "sv stop #{service_name}"
-        else
-          raise Hookit::Error::UnsupportedOption "Unsupported init schema '#{init}'"
         end
       end
 
@@ -98,8 +91,6 @@ module Hookit
           run_command! "svcadm restart #{service_name}"
         when :runit
           disable!; enable!
-        else
-          raise Hookit::Error::UnsupportedOption "Unsupported init schema '#{init}'"
         end
       end
 
@@ -107,8 +98,6 @@ module Hookit
         case init
         when :smf
           run_command! "svcadm refresh #{service_name}"
-        else
-          raise Hookit::Error::UnsupportedOption "Unsupported init schema '#{init}'"
         end
       end
 

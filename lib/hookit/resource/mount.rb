@@ -57,18 +57,18 @@ module Hookit
         entry = "#{device}\t#{device =~ /^\/dev/ ? device : "-"}\t#{mount_point}\t#{fstype}\t#{pass}\tyes\t#{options!}"
         case platform.os
         when 'sun'
-          `echo "#{entry}" >> /etc/vfstab`
+          run_command! `echo "#{entry}" >> /etc/vfstab`
         when 'linux'
-          `echo "#{entry}" >> /etc/fstab`
+          run_command! `echo "#{entry}" >> /etc/fstab`
         end
       end
 
       def disable!
         case platform.os
         when 'sun'
-          `egrep -v "#{device}.*#{mount_point}" /etc/vfstab > /tmp/vfstab.tmp; mv -f /tmp/vfstab.tmp /etc/vfstab`
+          run_command! `egrep -v "#{device}.*#{mount_point}" /etc/vfstab > /tmp/vfstab.tmp; mv -f /tmp/vfstab.tmp /etc/vfstab`
         when 'linux'
-          `egrep -v "#{device}.*#{mount_point}" /etc/fstab > /tmp/vfstab.tmp; mv -f /tmp/vfstab.tmp /etc/vfstab`
+          run_command! `egrep -v "#{device}.*#{mount_point}" /etc/fstab > /tmp/vfstab.tmp; mv -f /tmp/vfstab.tmp /etc/vfstab`
         end
       end
 
@@ -80,13 +80,6 @@ module Hookit
         options != "" ? (return "#{options}") : (return "-")
       end
 
-      def run_command!(cmd, expect_code=0)
-        `#{cmd}`
-        code = $?.exitstatus
-        if code != expect_code
-          raise Hookit::Error::UnexpectedExit, "#{cmd} failed with exit code '#{code}'"
-        end
-      end
     end
   end
 end

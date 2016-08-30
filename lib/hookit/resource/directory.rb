@@ -31,35 +31,37 @@ module Hookit
 
       def create!
         return if ::File.exists? path
-        cmd = "mkdir #{"-p " if recursive}#{path}"
-        `#{cmd}`
-        code = $?.exitstatus
-        if code != 0
-          raise Hookit::Error::UnexpectedExit, "#{cmd} failed with exit code '#{code}'"
-        end
+        run_command! "mkdir #{"-p " if recursive}#{path}"
       end
 
       def delete!
         return if not ::File.exists? path
-        cmd = "rm -rf #{path}"
-        `#{cmd}`
-        code = $?.exitstatus
-        if code != 0
-          raise Hookit::Error::UnexpectedExit, "#{cmd} failed with exit code '#{code}'"
-        end
+        run_command "rm -rf #{path}"
       end
 
       def chown!
         return unless owner or group
         if ::File.exists? path
-          `chown #{(group.nil?) ? owner : "#{owner}:#{group}"} #{path}`
+          cmd = "chown #{(group.nil?) ? owner : "#{owner}:#{group}"} #{path}"
+          run_command! "chown #{(group.nil?) ? owner : "#{owner}:#{group}"} #{path}"
         end
       end
 
       def chmod!
         if ::File.exists? path and mode
-          ::File.chmod(mode, path)
+          begin
+            ::File.chmod(mode, path)
+          rescue Exception => e
+            unexpected_failure("chmod file", e.message)
+          end
         end
+      end
+
+      def unexpected_failure(message, reason)
+        print_error(message, {
+          path: path,
+          reason: reason
+        })
       end
 
     end

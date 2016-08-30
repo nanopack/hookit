@@ -93,7 +93,7 @@ module Hookit
       protected
 
       def run_command!(cmd, expect_code=0)
-        `#{cmd}`
+        res = `#{cmd} 2>&1`
         code = $?.exitstatus
 
         # break early if the caller doesn't want to validate the exit code
@@ -102,8 +102,35 @@ module Hookit
         end
 
         if code != expect_code
-          raise Hookit::Error::UnexpectedExit, "#{cmd} failed with exit code '#{code}'"
+          print_error(name, {
+            exit: "#{code}",
+            command: cmd,
+            output: res
+          })
         end
+      end
+      
+      # print_error prints an error message to the user explaining
+      # what happened. This is intended to be a pleasant alternative
+      # to a ruby stack trace.
+      def print_error(message, opts={})
+        STDERR.puts
+        STDERR.puts "! FAILED TO #{message.upcase} !"
+        STDERR.puts
+        
+        opts.each_pair do |k, v|
+          next if v.nil? || v == ""
+          
+          STDERR.puts "#{k.capitalize}"
+          
+          v.split("\n").each do |line|
+            STDERR.puts " #{line}"
+          end
+          
+          STDERR.puts
+        end
+        
+        exit 1
       end
 
     end

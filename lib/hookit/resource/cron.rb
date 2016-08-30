@@ -17,7 +17,10 @@ module Hookit
             puts f.readline while true
           end
         rescue Timeout::Error
-          $stderr.puts 'Timed out running cron! Consider using a worker.'
+          print_error(name, {
+            command: cmd,
+            failure: "failed to return within #{timeout} seconds"
+          })
         end
       end
       

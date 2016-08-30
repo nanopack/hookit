@@ -27,9 +27,7 @@ module Hookit
       def create!
         case platform.os
         when 'sun'
-          `logadm -c -w #{path} -s #{filesize ||= '10m'} -S #{max_size ||= '500m'} -C #{count ||= '10'} -N`
-        else
-          raise Hookit::Error::UnsupportedPlatform, "unsupported platform '#{platform.name}'"
+          run_command! `logadm -c -w #{path} -s #{filesize ||= '10m'} -S #{max_size ||= '500m'} -C #{count ||= '10'} -N`
         end
       end
 

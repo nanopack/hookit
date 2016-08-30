@@ -7,7 +7,6 @@ module Hookit
       field :destination
       field :source
       field :ssh_host
-      field :validator
       field :options
 
       actions :send, :receive, :transmit, :snapshot, :destroy, :rollback, :clone
@@ -71,27 +70,6 @@ module Hookit
 
       def clone!
         run_command! "zfs clone #{snapshot} #{dataset}"
-      end
-
-      def validate!(res)
-        if validator.is_a? Proc
-          if validator.call(res)
-            res
-          else
-            raise "ERROR: execute resource \"#{name}\" failed validation!"
-          end
-        else
-          res
-        end
-      end
-
-      def run_command!(cmd, expect_code=0)
-        res = `#{cmd}`
-        code = $?.exitstatus
-        if code != expect_code
-          raise Hookit::Error::UnexpectedExit, "#{cmd} failed with exit code '#{code}'"
-        end
-        return validate!(res)
       end
 
     end
