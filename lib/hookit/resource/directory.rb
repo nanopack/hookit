@@ -36,7 +36,7 @@ module Hookit
 
       def delete!
         return if not ::File.exists? path
-        run_command "rm -rf #{path}"
+        run_command! "rm -rf #{path}"
       end
 
       def chown!
