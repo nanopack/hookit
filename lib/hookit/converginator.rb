@@ -68,7 +68,7 @@ module Hookit
       when :string
         value = [value] if ( valid_string? value )
       end
-      (value + template[:default]).uniq
+      ((value || []) + (template[:default] || [])).uniq
     end
 
     def valid?(template, value)
