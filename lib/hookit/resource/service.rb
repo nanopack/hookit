@@ -11,6 +11,7 @@ module Hookit
 
       def initialize(name)
         service_name(name) unless service_name
+        super
 
         # if init scheme is not provided, try to set reasonable defaults
         if not init
