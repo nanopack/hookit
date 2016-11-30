@@ -25,7 +25,6 @@ module Hookit
 
       def initialize(name)
         command name unless command
-        timeout 3600
         returns 0
         super
       end
@@ -59,28 +58,8 @@ module Hookit
       end
 
       def run!
-        begin
-          Timeout::timeout(timeout) do
-            res = `#{cmd} 2>&1`
-            code = $?.exitstatus
-            if on_exit and on_exit.respond_to? :call
-              on_exit.call(code)
-            else
-              if code != returns
-                unexpected_exit(code, res)
-              end
-            end
-            validate! res
-          end
-        rescue Timeout::Error
-          
-          print_error(name, {
-            command: cmd,
-            failure: "failed to return within #{timeout} seconds"
-          })
-          
-          exit 1
-        end
+        timeout = timeout || 3600
+        stream!
       end
 
       def stream!
@@ -90,41 +69,54 @@ module Hookit
         STDOUT.sync = STDERR.sync = true # don't buffer stdout/stderr
 
         Open3.popen3 cmd do |stdin, stdout, stderr, wait_thr|
-          stdout_eof = false
-          stderr_eof = false
+          begin
+            Timeout::timeout(timeout) do
+              stdout_eof = false
+              stderr_eof = false
 
-          until stdout_eof and stderr_eof do
-            (ready_pipes, dummy, dummy) = IO.select([stdout, stderr])
-            ready_pipes.each_with_index do |socket|
-              if socket == stdout
-                begin
-                  chunk = socket.readpartial(4096)
-                  if on_data and on_data.respond_to? :call
-                    on_data.call(chunk)
+              until stdout_eof and stderr_eof do
+                (ready_pipes, dummy, dummy) = IO.select([stdout, stderr])
+                ready_pipes.each_with_index do |socket|
+                  if socket == stdout
+                    begin
+                      chunk = socket.readpartial(4096)
+                      if on_data and on_data.respond_to? :call
+                        on_data.call(chunk)
+                      end
+                      if on_stdout and on_stdout.respond_to? :call
+                        on_stdout.call(chunk)
+                      end
+                    rescue EOFError
+                      stdout_eof = true
+                    end
+                    result << chunk.to_s
+                  elsif socket == stderr
+                    begin
+                      chunk = socket.readpartial(4096)
+                      if on_data and on_data.respond_to? :call
+                        on_data.call(chunk)
+                      end
+                      if on_stderr and on_stderr.respond_to? :call
+                        on_stderr.call(chunk)
+                      end
+                    rescue EOFError
+                      stderr_eof = true
+                    end
+                    result << chunk.to_s
                   end
-                  if on_stdout and on_stdout.respond_to? :call
-                    on_stdout.call(chunk)
-                  end
-                rescue EOFError
-                  stdout_eof = true
                 end
-                result << chunk.to_s
-              elsif socket == stderr
-                begin
-                  chunk = socket.readpartial(4096)
-                  if on_data and on_data.respond_to? :call
-                    on_data.call(chunk)
-                  end
-                  if on_stderr and on_stderr.respond_to? :call
-                    on_stderr.call(chunk)
-                  end
-                rescue EOFError
-                  stderr_eof = true
-                end
-                result << chunk.to_s
               end
             end
+          rescue Timeout::Error => e
+            Process.kill 9, wait_thr[:pid]
+
+            print_error(name, {
+              command: cmd,
+              failure: "failed to return within #{timeout} seconds"
+            })
+            exit 1
           end
+
 
           exit_status = wait_thr.value.to_s.match(/exit (\d+)/)[1].to_i
         end
