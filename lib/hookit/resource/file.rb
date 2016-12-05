@@ -1,8 +1,8 @@
+require 'shellwords'
+
 module Hookit
   module Resource
     class File < Base
-
-      require 'shellwords'
 
       field :path
       field :content

@@ -1,3 +1,5 @@
+require 'shellwords'
+
 module Hookit
   module Resource
     class Mount < Base
@@ -43,18 +45,18 @@ module Hookit
         ::FileUtils.mkdir_p(mount_point)
         case platform.os
         when 'sun'
-          run_command! "mount -O -F #{fstype} -o retry=5,timeo=300 #{options!(as_arg=true)} #{device} #{mount_point}"
+          run_command! "mount -O -F #{fstype} -o retry=5,timeo=300 #{options!(as_arg=true)} #{device} #{Shellwords.escape(mount_point)}"
         when 'linux'
-          run_command! "mount -t #{fstype} -o retry=5,timeo=300 #{options!(as_arg=true)} #{device} #{mount_point}"
+          run_command! "mount -t #{fstype} -o retry=5,timeo=300 #{options!(as_arg=true)} #{device} #{Shellwords.escape(mount_point)}"
         end
       end
 
       def umount!
-        run_command! "umount #{mount_point}"
+        run_command! "umount #{Shellwords.escape(mount_point)}"
       end
 
       def enable!
-        entry = "#{device}\t#{device =~ /^\/dev/ ? device : "-"}\t#{mount_point}\t#{fstype}\t#{pass}\tyes\t#{options!}"
+        entry = "#{device}\t#{device =~ /^\/dev/ ? device : "-"}\t#{Shellwords.escape(mount_point)}\t#{fstype}\t#{pass}\tyes\t#{options!}"
         case platform.os
         when 'sun'
           run_command! `echo "#{entry}" >> /etc/vfstab`
@@ -66,9 +68,9 @@ module Hookit
       def disable!
         case platform.os
         when 'sun'
-          run_command! `egrep -v "#{device}.*#{mount_point}" /etc/vfstab > /tmp/vfstab.tmp; mv -f /tmp/vfstab.tmp /etc/vfstab`
+          run_command! `egrep -v "#{device}.*#{Shellwords.escape(mount_point)}" /etc/vfstab > /tmp/vfstab.tmp; mv -f /tmp/vfstab.tmp /etc/vfstab`
         when 'linux'
-          run_command! `egrep -v "#{device}.*#{mount_point}" /etc/fstab > /tmp/vfstab.tmp; mv -f /tmp/vfstab.tmp /etc/vfstab`
+          run_command! `egrep -v "#{device}.*#{Shellwords.escape(mount_point)}" /etc/fstab > /tmp/vfstab.tmp; mv -f /tmp/vfstab.tmp /etc/vfstab`
         end
       end
 

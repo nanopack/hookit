@@ -1,3 +1,5 @@
+require 'shellwords'
+
 module Hookit
   module Resource
     class Directory < Base
@@ -31,19 +33,19 @@ module Hookit
 
       def create!
         return if ::File.exists? path
-        run_command! "mkdir #{"-p " if recursive}#{path}"
+        run_command! "mkdir #{"-p " if recursive}#{Shellwords.escape(path)}"
       end
 
       def delete!
         return if not ::File.exists? path
-        run_command! "rm -rf #{path}"
+        run_command! "rm -rf #{Shellwords.escape(path)}"
       end
 
       def chown!
         return unless owner or group
         if ::File.exists? path
-          cmd = "chown #{(group.nil?) ? owner : "#{owner}:#{group}"} #{path}"
-          run_command! "chown #{(group.nil?) ? owner : "#{owner}:#{group}"} #{path}"
+          cmd = "chown #{(group.nil?) ? owner : "#{owner}:#{group}"} #{Shellwords.escape(path)}"
+          run_command! "chown #{(group.nil?) ? owner : "#{owner}:#{group}"} #{Shellwords.escape(path)}"
         end
       end
 

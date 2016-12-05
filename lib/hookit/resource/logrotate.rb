@@ -1,3 +1,5 @@
+require 'shellwords'
+
 module Hookit
   module Resource
     class Logrotate < Base
@@ -27,7 +29,7 @@ module Hookit
       def create!
         case platform.os
         when 'sun'
-          run_command! `logadm -c -w #{path} -s #{filesize ||= '10m'} -S #{max_size ||= '500m'} -C #{count ||= '10'} -N`
+          run_command! `logadm -c -w #{Shellwords.escape(path)} -s #{filesize ||= '10m'} -S #{max_size ||= '500m'} -C #{count ||= '10'} -N`
         end
       end
 
