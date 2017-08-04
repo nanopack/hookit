@@ -5,6 +5,7 @@ module Hookit
       field :recursive
       field :service_name
       field :init
+      field :timeout
 
       actions :enable, :disable, :start, :stop, :restart, :reload
       default_action :enable
@@ -36,6 +37,8 @@ module Hookit
           enable!
         when :stop
           disable!
+        when :force_stop
+          force_disable!
         when :restart
           restart!
         when :reload
@@ -51,7 +54,7 @@ module Hookit
           run_command! "svcadm enable -s #{"-r" if recursive} #{service_name}"
         when :runit
           # register and potentially start the service
-          run_command! "sv start #{service_name}", false
+          run_command! "sv start #{"-w #{timeout}" if timeout} #{service_name}", false
 
           # runit can take up to 5 seconds to register the service before the
           # service starts to run. We'll keep checking the status for up to 
@@ -72,7 +75,7 @@ module Hookit
           if registered
             # just in case the service is registered but not started, try
             # to start the service one more time
-            run_command! "sv start #{service_name}"
+            run_command! "sv start #{"-w #{timeout}" if timeout} #{service_name}"
           end
         end
       end
@@ -82,7 +85,14 @@ module Hookit
         when :smf
           run_command! "svcadm disable -s #{service_name}"
         when :runit
-          run_command! "sv stop #{service_name}"
+          run_command! "sv stop #{"-w #{timeout}" if timeout} #{service_name}"
+        end
+      end
+
+      def force_disable!
+        case init
+        when :runit
+          run_command! "sv stop #{"-w #{timeout}" if timeout} #{service_name}"
         end
       end
 
