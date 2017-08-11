@@ -1,3 +1,5 @@
+require 'shellwords'
+
 module Hookit
   module Resource
     class Scp < Base
@@ -31,7 +33,7 @@ module Hookit
       end
 
       def copy!
-        run_command! "scp -q#{preserve!}#{recursive!}B#{compression!} #{config!} #{port!} #{cipher!} #{identity!} #{ssh_options!} #{source} #{destination}"
+        run_command! "scp -q#{preserve!}#{recursive!}B#{compression!} #{config!} #{port!} #{cipher!} #{identity!} #{ssh_options!} #{Shellwords.escape(source)} #{Shellwords.escape(destination)}"
       end
 
       def cipher!

@@ -1,3 +1,5 @@
+require 'shellwords'
+
 module Hookit
   module Resource
     class Rsync < Base
@@ -26,7 +28,7 @@ module Hookit
       end
 
       def sync!
-        run_command! "rsync -q#{archive!}#{recursive!}#{checksum!}#{compress!} #{wrapper!} #{source} #{destination}"
+        run_command! "rsync -q#{archive!}#{recursive!}#{checksum!}#{compress!} #{wrapper!} #{Shellwords.escape(source)} #{Shellwords.escape(destination)}"
       end
 
       def archive!

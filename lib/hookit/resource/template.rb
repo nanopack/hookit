@@ -3,6 +3,7 @@ require 'erubis'
 require 'erb'
 require 'oj'
 require 'multi_json'
+require 'shellwords'
 
 module Hookit
   module Resource
@@ -68,7 +69,7 @@ module Hookit
       def chown!
         return unless owner or group
         if ::File.exists? path
-          run_command! "chown #{(group.nil?) ? owner : "#{owner}:#{group}"} #{path}"
+          run_command! "chown #{(group.nil?) ? owner : "#{owner}:#{group}"} #{Shellwords.escape(path)}"
         end
       end
 
@@ -83,7 +84,7 @@ module Hookit
       end
 
       def touch!
-        run_command! "touch -c #{path}"
+        run_command! "touch -c #{Shellwords.escape(path)}"
       end
 
       def render

@@ -1,3 +1,5 @@
+require 'shellwords'
+
 module Hookit
   module Resource
     class Link < Base
@@ -32,17 +34,17 @@ module Hookit
       def create!
         args = ['f']
         args << 'sn' if link_type == :symbolic
-        run_command! "ln -#{args.join} #{to} #{target_file}"
+        run_command! "ln -#{args.join} #{Shellwords.escape(to)} #{Shellwords.escape(target_file)}"
       end
 
       def delete!
-        run_command! "rm -f #{target_file}"
+        run_command! "rm -f #{Shellwords.escape(target_file)}"
       end
 
       def chown!
         return unless owner or group
         if ::File.exists? target_file
-          run_command! "chown #{(group.nil?) ? owner : "#{owner}:#{group}"} #{target_file}"
+          run_command! "chown #{(group.nil?) ? owner : "#{owner}:#{group}"} #{Shellwords.escape(target_file)}"
         end
       end
     end
