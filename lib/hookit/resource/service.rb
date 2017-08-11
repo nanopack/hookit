@@ -7,7 +7,7 @@ module Hookit
       field :init
       field :timeout
 
-      actions :enable, :disable, :start, :stop, :restart, :reload
+      actions :enable, :disable, :start, :stop, :force_stop, :restart, :reload
       default_action :enable
 
       def initialize(name)
