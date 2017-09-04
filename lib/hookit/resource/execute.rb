@@ -66,8 +66,11 @@ module Hookit
         exit_status = 0
         result = ""
 
-        STDOUT.sync = STDERR.sync = true # don't buffer stdout/stderr
-
+        # don't buffer /stdin/stdout/stderr
+        STDIN.sync  = true
+        STDOUT.sync = true
+        STDERR.sync = true 
+        
         Open3.popen3 cmd do |stdin, stdout, stderr, wait_thr|
           begin
             Timeout::timeout(timeout) do
@@ -75,7 +78,7 @@ module Hookit
               stderr_eof = false
 
               until stdout_eof and stderr_eof do
-                (ready_pipes, dummy, dummy) = IO.select([stdout, stderr])
+                (ready_pipes, dummy, dummy) = IO.select([STDIN, stdout, stderr])
                 ready_pipes.each_with_index do |socket|
                   if socket == stdout
                     begin
@@ -103,6 +106,10 @@ module Hookit
                       stderr_eof = true
                     end
                     result << chunk.to_s
+                  elsif socket == STDIN
+                    # write what we got on STDIN right into the process' stdin
+                    chunk = socket.readpartial(4096)
+                    stdin.write(chunk)
                   end
                 end
               end
