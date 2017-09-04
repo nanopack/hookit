@@ -68,8 +68,6 @@ module Hookit
 
         STDOUT.sync = STDERR.sync = true # don't buffer stdout/stderr
         
-        puts cmd
-
         Open3.popen3 cmd do |stdin, stdout, stderr, wait_thr|
           begin
             Timeout::timeout(timeout) do
