@@ -66,7 +66,10 @@ module Hookit
         exit_status = 0
         result = ""
 
-        STDOUT.sync = STDERR.sync = true # don't buffer stdout/stderr
+        # don't buffer /stdin/stdout/stderr
+        STDIN.sync  = true
+        STDOUT.sync = true
+        STDERR.sync = true 
         
         Open3.popen3 cmd do |stdin, stdout, stderr, wait_thr|
           begin
