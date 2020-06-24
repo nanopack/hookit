@@ -164,10 +164,10 @@ module Hookit
       # 2- escape quotes
       # 3- escape dollar signs
       def escape(cmd)
-        cmd.gsub!(/\\/, "\\\\\\")
-        cmd.gsub!(/"/, "\\\"")
-        cmd.gsub!(/\$/, "\\$")
-        cmd
+        # cmd.gsub!(/\\/, "\\\\\\")
+        # cmd.gsub!(/"/, "\\\"")
+        # cmd.gsub!(/\$/, "\\$")
+        cmd.gsub(/\\/, "\\\\\\").gsub(/"/, "\\\"").gsub(/\$/, "\\$")
       end
 
       def su(user, cmd)
